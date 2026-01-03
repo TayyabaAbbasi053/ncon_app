@@ -1,0 +1,54 @@
+name: ncon_app
+description: "A new Flutter project."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.6.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Firebase packages - Updated to compatible versions
+  firebase_core: ^3.6.0
+  firebase_auth: ^5.3.0
+  cloud_firestore: ^5.4.0
+  firebase_storage: ^12.3.0
+
+  # Image Picker - updated version
+  image_picker: ^1.2.0
+
+  # UI and icons
+  cupertino_icons: ^1.0.8
+
+  # Splash screen & app icon generators
+  flutter_native_splash: ^2.4.4
+  flutter_launcher_icons: ^0.13.1
+  http: ^1.5.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/app_logo.png
+    - assets/images/splash_logo.png
+
+# Native splash screen configuration
+flutter_native_splash:
+  color: "#08548e"
+  image: assets/images/splash_logo.png
+  android: true
+  ios: true
+  web: true
+
+# App icon configuration
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: assets/images/app_logo.png
