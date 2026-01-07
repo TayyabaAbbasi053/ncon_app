@@ -13,9 +13,7 @@ import 'category_selection_screen.dart';
 import 'post_detail_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-  final firebase_auth.User? user;
-
-  const HomeScreen({super.key, this.user});
+  const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -35,42 +33,38 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _loadPosts() {
-    setState(() {
-      _isLoading = true;
-    });
+    setState(() => _isLoading = true);
 
     _firestoreService.getPosts().listen((posts) {
-      if (mounted) {
-        for (var post in posts) {
-          debugPrint('📄 Post: ${post.title}');
-          debugPrint('🖼️ Images: ${post.images}');
-          if (post.eventDate != null) {
-            debugPrint('📅 Event Date: ${post.eventDate}');
-          }
-        }
+      if (!mounted) return;
 
-        setState(() {
-          _posts = posts;
-          _filteredPosts = posts;
-          _isLoading = false;
-        });
+      for (var post in posts) {
+        debugPrint('📄 Post: ${post.title}');
+        debugPrint('🖼️ Images: ${post.images}');
+        if (post.eventDate != null) {
+          debugPrint('📅 Event Date: ${post.eventDate}');
+        }
       }
+
+      setState(() {
+        _posts = posts;
+        _filteredPosts = posts;
+        _isLoading = false;
+      });
     });
   }
 
   void _filterPostsByCategory(int index) {
     if (!mounted) return;
+
     setState(() {
       _currentIndex = index;
       if (index == 0) {
-        // All posts
         _filteredPosts = _posts;
       } else {
-        // Filter by specific category
         final category = _getCategoryForIndex(index);
-        _filteredPosts = _posts
-            .where((post) => post.category == category)
-            .toList();
+        _filteredPosts =
+            _posts.where((post) => post.category == category).toList();
       }
     });
   }
@@ -80,7 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
       case 1:
         return 'Carpooling';
       case 2:
-        return 'Marketplace'; // Changed from 'Market Sell'
+        return 'Marketplace';
       case 3:
         return 'Jobs';
       case 4:
@@ -93,39 +87,47 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _navigateToAccount() {
-    if (widget.user == null) {
+    final user = firebase_auth.FirebaseAuth.instance.currentUser;
+
+    if (user == null) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const LoginScreen()),
+        MaterialPageRoute(builder: (_) => const LoginScreen()),
       );
-    } else {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => AccountScreen(user: widget.user)),
-      );
+      return;
     }
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const AccountScreen()),
+    );
   }
 
   void _navigateToCreatePost() {
-    if (widget.user == null) {
+    final user = firebase_auth.FirebaseAuth.instance.currentUser;
+
+    if (user == null) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const LoginScreen()),
+        MaterialPageRoute(builder: (_) => const LoginScreen()),
       );
-    } else {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => const CategorySelectionScreen()),
-      );
+      return;
     }
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const CategorySelectionScreen(),
+      ),
+    );
   }
 
   void _navigateToPostDetail(Post post) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => PostDetailScreen(post: post)),
+      MaterialPageRoute(
+        builder: (_) => PostDetailScreen(post: post),
+      ),
     );
   }
 
@@ -156,16 +158,15 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
       body: _isLoading
-          ? const Center(
-              child: CircularProgressIndicator(),
-            )
+          ? const Center(child: CircularProgressIndicator())
           : RefreshIndicator(
               onRefresh: _refreshPosts,
               child: _filteredPosts.isEmpty
                   ? const Center(
                       child: Text(
                         'No posts found.',
-                        style: TextStyle(fontSize: 16, color: Colors.grey),
+                        style:
+                            TextStyle(fontSize: 16, color: Colors.grey),
                       ),
                     )
                   : ListView.builder(

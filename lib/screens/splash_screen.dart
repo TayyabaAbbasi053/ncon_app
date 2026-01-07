@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'home_screen.dart';
+import 'login_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -13,29 +14,30 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    _navigateToHome();
+    _navigateNext();
   }
 
-  Future<void> _navigateToHome() async {
+  Future<void> _navigateNext() async {
     await Future.delayed(const Duration(seconds: 2));
 
-    // Check if user is logged in
-    firebase_auth.User? user = firebase_auth.FirebaseAuth.instance.currentUser;
+    final firebase_auth.User? user =
+        firebase_auth.FirebaseAuth.instance.currentUser;
 
-    if (mounted) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => HomeScreen(user: user),
-        ),
-      );
-    }
+    if (!mounted) return;
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (_) =>
+            user == null ? const LoginScreen() : const HomeScreen(),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white, // ✅ White background
+      backgroundColor: Colors.white,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -51,7 +53,7 @@ class _SplashScreenState extends State<SplashScreen> {
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF08548E), // Keep brand blue for text
+                color: Color(0xFF08548E),
               ),
             ),
             const SizedBox(height: 8),
@@ -59,7 +61,7 @@ class _SplashScreenState extends State<SplashScreen> {
               'NCON',
               style: TextStyle(
                 fontSize: 18,
-                color: Colors.grey, // Soft grey subtitle
+                color: Colors.grey,
               ),
             ),
           ],

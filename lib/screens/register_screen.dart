@@ -40,9 +40,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
           child: Form(
             key: _formKey,
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Image.asset('assets/images/app_logo.png', width: 120, height: 120),
+                Image.asset(
+                  'assets/images/app_logo.png',
+                  width: 120,
+                  height: 120,
+                ),
                 const SizedBox(height: 24),
                 Text(
                   'Create Account',
@@ -59,74 +62,85 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
                 const SizedBox(height: 32),
 
-                // Name Field
+                // Name
                 TextFormField(
                   controller: _nameController,
                   decoration: InputDecoration(
                     labelText: 'Full Name',
+                    prefixIcon:
+                        Icon(Icons.person, color: AppColors.primary),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8)),
-                    prefixIcon: Icon(Icons.person, color: AppColors.primary),
                   ),
                   validator: (value) =>
-                      value == null || value.isEmpty ? 'Please enter your name' : null,
+                      value == null || value.isEmpty
+                          ? 'Please enter your name'
+                          : null,
                 ),
+
                 const SizedBox(height: 16),
 
-                // CMS ID Field
+                // CMS ID
                 TextFormField(
                   controller: _cmsIdController,
+                  keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                     labelText: 'CMS ID (6 digits)',
+                    prefixIcon:
+                        Icon(Icons.badge, color: AppColors.primary),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8)),
-                    prefixIcon: Icon(Icons.badge, color: AppColors.primary),
                   ),
-                  keyboardType: TextInputType.number,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your CMS ID';
                     }
-                    if (value.length != 6 || !RegExp(r'^\d{6}$').hasMatch(value)) {
+                    if (!RegExp(r'^\d{6}$').hasMatch(value)) {
                       return 'CMS ID must be 6 digits';
                     }
                     return null;
                   },
                 ),
+
                 const SizedBox(height: 16),
 
-                // Email Field
+                // Email
                 TextFormField(
                   controller: _emailController,
+                  keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
                     labelText: 'Email',
+                    prefixIcon:
+                        Icon(Icons.email, color: AppColors.primary),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8)),
-                    prefixIcon: Icon(Icons.email, color: AppColors.primary),
                   ),
-                  keyboardType: TextInputType.emailAddress,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your email';
                     }
-                    if (!value.contains('@seecs.edu.pk') && !value.contains('@nbs.edu.pk')) {
-                      return 'Please use a valid SEECS or NBS email address';
+                    if (!value.endsWith('@seecs.edu.pk') &&
+                        !value.endsWith('@nust.edu.pk') &&
+                        !value.endsWith('@student.nust.edu.pk')) {
+                      return 'Please use a valid NUST email address';
                     }
                     return null;
                   },
                 ),
+
                 const SizedBox(height: 16),
 
-                // Password Field
+                // Password
                 TextFormField(
                   controller: _passwordController,
+                  obscureText: true,
                   decoration: InputDecoration(
                     labelText: 'Password',
+                    prefixIcon:
+                        Icon(Icons.lock, color: AppColors.primary),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8)),
-                    prefixIcon: Icon(Icons.lock, color: AppColors.primary),
                   ),
-                  obscureText: true,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your password';
@@ -137,18 +151,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     return null;
                   },
                 ),
+
                 const SizedBox(height: 16),
 
                 // Confirm Password
                 TextFormField(
                   controller: _confirmPasswordController,
+                  obscureText: true,
                   decoration: InputDecoration(
                     labelText: 'Confirm Password',
+                    prefixIcon:
+                        Icon(Icons.lock, color: AppColors.primary),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8)),
-                    prefixIcon: Icon(Icons.lock, color: AppColors.primary),
                   ),
-                  obscureText: true,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please confirm your password';
@@ -159,35 +175,32 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     return null;
                   },
                 ),
+
                 const SizedBox(height: 16),
 
-                // Society Checkbox
                 CheckboxListTile(
                   title: const Text('Register as a Society'),
                   value: _isSociety,
                   activeColor: AppColors.primary,
                   onChanged: (value) {
-                    setState(() {
-                      _isSociety = value ?? false;
-                    });
+                    setState(() => _isSociety = value ?? false);
                   },
                 ),
+
                 if (_isSociety)
-                  const Padding(
-                    padding: EdgeInsets.only(top: 8),
-                    child: Text(
-                      'Note: Society accounts require admin approval.',
-                      style: TextStyle(color: Colors.grey, fontSize: 14),
-                    ),
+                  const Text(
+                    'Note: Society accounts require admin approval.',
+                    style: TextStyle(color: Colors.grey),
                   ),
+
                 const SizedBox(height: 24),
 
                 if (_error.isNotEmpty)
                   Text(_error,
-                      style: const TextStyle(color: Colors.red, fontSize: 14)),
+                      style: const TextStyle(color: Colors.red)),
+
                 const SizedBox(height: 16),
 
-                // Register Button
                 SizedBox(
                   width: double.infinity,
                   height: 50,
@@ -201,7 +214,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     child: _isLoading
                         ? const CircularProgressIndicator(
                             valueColor:
-                                AlwaysStoppedAnimation<Color>(Colors.white),
+                                AlwaysStoppedAnimation<Color>(
+                                    Colors.white),
                           )
                         : const Text(
                             'REGISTER',
@@ -221,42 +235,37 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   Future<void> _register() async {
-    if (_formKey.currentState!.validate()) {
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() {
+      _isLoading = true;
+      _error = '';
+    });
+
+    try {
+      final user = await _authService.registerWithEmailAndPassword(
+        _emailController.text.trim(),
+        _passwordController.text.trim(),
+        _nameController.text.trim(),
+        _cmsIdController.text.trim(),
+        isSociety: _isSociety,
+      );
+
+      if (!mounted || user == null) return;
+
+      setState(() => _isLoading = false);
+
+      // ✅ FIXED NAVIGATION
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const HomeScreen()),
+      );
+    } catch (_) {
+      if (!mounted) return;
       setState(() {
-        _isLoading = true;
-        _error = '';
+        _error = 'Failed to register. Please try again.';
+        _isLoading = false;
       });
-
-      try {
-        final user = await _authService.registerWithEmailAndPassword(
-          _emailController.text.trim(),
-          _passwordController.text.trim(),
-          _nameController.text.trim(),
-          _cmsIdController.text.trim(),
-          isSociety: _isSociety,
-        );
-
-        if (mounted && user != null) {
-          debugPrint("✅ Registration complete for: ${user.email}");
-          setState(() => _isLoading = false);
-
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => HomeScreen(user: user)),
-          );
-        } else {
-          setState(() {
-            _error = 'User registration failed.';
-            _isLoading = false;
-          });
-        }
-      } catch (e) {
-        debugPrint("❌ Registration exception: $e");
-        setState(() {
-          _error = 'Failed to register. Please try again.';
-          _isLoading = false;
-        });
-      }
     }
   }
 }
