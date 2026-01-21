@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "668104791199",
+    "project_id": "nconapp-cbc22",
+    "storage_bucket": "nconapp-cbc22.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:668104791199:android:eae5c315a816ccd43f3eaa",
+        "android_client_info": {
+          "package_name": "com.example.ncon_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCWK8hdUHyqtNEAp9PC0_0TSTmbyrevcdI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
